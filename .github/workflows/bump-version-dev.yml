@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     branches:
-      - development
+      - develop
     paths-ignore:
       - "package.json"
       - "CHANGELOG.md"
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: development
+          ref: develop
 
       - name: Bump version and create changelog
         uses: fbrcode/conventional-changelog-action@releases/v5
@@ -33,7 +33,7 @@ jobs:
           output-file: "CHANGELOG.md"
           skip-on-empty: "false"
           skip-tag: "true"
-          git-branch: "development"
+          git-branch: "develop"
 
       - name: Create release
         uses: actions/create-release@v1
