@@ -1,0 +1,29 @@
+name: Tests CI
+
+on:
+  push:
+    branches: [development, staging]
+  pull_request:
+    branches: [development, staging, main]
+
+jobs:
+  build:
+    environment: CI
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "yarn"
+
+      - run: yarn install
+
+      - name: Tests
+        run: yarn test:ci

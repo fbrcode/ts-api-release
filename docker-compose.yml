@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  api:
+    container_name: app-api
+    restart: always
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+    image: app-api:latest
+    platform: linux/amd64
+    ports:
+      - ${PORT:-8080}:3333
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://0.0.0.0:3333/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      default:
+        aliases:
+          - api
+
+networks:
+  default:
+    name: app-api-network

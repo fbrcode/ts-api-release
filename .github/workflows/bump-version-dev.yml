@@ -1,0 +1,45 @@
+name: Development App Version Bump
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - development
+    paths-ignore:
+      - "package.json"
+      - "CHANGELOG.md"
+
+jobs:
+  bump-version:
+    name: "Bump app version"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: development
+
+      - name: Bump version and create changelog
+        uses: fbrcode/conventional-changelog-action@releases/v5
+        id: changelog
+        with:
+          github-token: ${{ secrets.VERSION_BUMP }}
+          git-message: "chore(release): {version}"
+          preset: "angular"
+          tag-prefix: ""
+          output-file: "CHANGELOG.md"
+          skip-on-empty: "false"
+          skip-tag: "true"
+          git-branch: "development"
+
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.VERSION_BUMP }}
+        with:
+          tag_name: ${{ steps.changelog.outputs.version }}
+          release_name: ${{ steps.changelog.outputs.version }}
+          body: ${{ steps.changelog.outputs.changelog }}
